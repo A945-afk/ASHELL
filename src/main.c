@@ -20,13 +20,13 @@ int main(int argc, char *argv[])
     fgets(ibuf, MAX_INPUT, stdin);
     ibuf[strcspn(ibuf, "\n")] = '\0';
     if (!strcasecmp(ibuf, "exit")) break;
-    if(!strncasecmp(ibuf, builtin[1], 5))
+    if(!strncasecmp(ibuf, "echo ", 5))
     {
       char* echo_out = ibuf + 5;
       printf("%s\n",echo_out);
       continue;
     }
-    else if(!strncasecmp(ibuf, builtin[2], 5))
+    if(!strncasecmp(ibuf, "type ", 5))
     {
       char* type_out = ibuf + 5;
       int type_match = 0;
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
       {
         if (!strcasecmp(builtin[i], type_out))
         {
-          printf("%s is a shell builtin",type_out);
+          printf("%s is a shell builtin\n",type_out);
           type_match = 1;
           break;
         }
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
       }
       if (type_match == 0)
       {
-        printf("%s: not found", type_match);
+        printf("%s: not found\n", type_out);
       }
       continue;
     }
