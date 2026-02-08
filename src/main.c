@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
         }
         
       }
-      if (!type_match)
+      if (type_match == 0)
       {
         printf("%s: not found", type_match);
       }
