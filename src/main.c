@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 {
   // Flush after every printf
   setbuf(stdout, NULL);
+  printf("$ ");
   char ibuf[MAX_INPUT];
   fgets(ibuf, MAX_INPUT, stdin);
   ibuf[strcspn(ibuf, "\n")] = '\0';
