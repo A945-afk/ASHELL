@@ -5,7 +5,7 @@
 #define MAX_INPUT 512
 int main(int argc, char *argv[]) 
 {
-  while(true)
+  while(1)
   {
     // Flush after every printf
     setbuf(stdout, NULL);
@@ -13,11 +13,13 @@ int main(int argc, char *argv[])
     char ibuf[MAX_INPUT];
     fgets(ibuf, MAX_INPUT, stdin);
     ibuf[strcspn(ibuf, "\n")] = '\0';
-    if (!strcasecmp(ibuf, "exit"))
+    if (!strcasecmp(ibuf, "exit")) break;
+    if(!strncasecmp(ibuf, "echo ", 5))
     {
-      break;
+      char* echo_out = ibuf + 5;
+      printf("%s\n",echo_out);
+      continue;
     }
-    
     printf("%s: command not found\n", ibuf);
   }
   return 0;
