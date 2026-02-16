@@ -147,7 +147,7 @@ int builtin_type(char** tokens)
     for (int j = 0; builtins[j].key; j++)
     {
       if(strcmp(tokens[i],builtins[j].key)) continue;
-      printf("%s is a shell builtin\n", tokens[i]);
+      printf("%s is a shell builtin", tokens[i]);
       goto loop_end;
     }
     struct stat buf;
