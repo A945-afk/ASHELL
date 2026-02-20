@@ -3,6 +3,8 @@
 #include <string.h>
 #include<sys/stat.h>
 #include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
 #include"ambuilt.h"
 
 // reads strings from input
@@ -133,6 +135,13 @@ int execute(char* path, char** args)
     perror("fork");
     return -1;
   }
-  if(pid!=0) return 0;
-  execve(path,args,__environ);
+  if(pid==0)
+  {printf("\n");execve(path,args,__environ);perror("execve"); exit(1);}
+  int status;
+  waitpid(pid, &status, 0);
+  for (size_t i = 0; args[i]; i++)
+  {
+    printf("%s\n",args[i]);
+  }
+  
 }
