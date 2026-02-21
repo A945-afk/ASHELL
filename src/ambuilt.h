@@ -13,38 +13,31 @@ struct  builtin
 };
 
 
-
-
 extern int ext_con;
 
-
-//take stdin and return a char*
+//read input
 char* read_line(FILE* file);
 
-
-//tokenize the command lines
+//tokenize string
 char** tokenize(char* command, char* splt);
-
 
 //exe permission checker
 char* exemap(char* fln);
 
-
-// echo
+//echo
 int builtin_echo(char** tokens);
-
 
 //type
 int builtin_type(char** tokens);
 
-
 //exit
 int builtin_exit(char** tokens);
-
 
 //execution
 int execute(char* path, char** args);
 
+//pwd
+int builtin_pwd(char** tokens);
 
 
 //builtin list
@@ -53,6 +46,7 @@ static struct builtin builtins[] =
   {"echo", builtin_echo},
   {"type", builtin_type},
   {"exit", builtin_exit},
+  {"pwd", builtin_pwd},
   {NULL,NULL}
 };
 

@@ -1,13 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include<sys/stat.h>
 #include<unistd.h>
+#include<sys/stat.h>
 #include<sys/types.h>
 #include<sys/wait.h>
 #include"ambuilt.h"
 
-// reads strings from input
+
+
+
+
+//reads from input, 512B chunks
 char* read_line(FILE* file)
 { if(!file) return NULL;
   char* buffer = malloc(MAX_INPUT);
@@ -94,7 +98,7 @@ int builtin_echo(char** tokens)
 
 
 
-// type determiner
+//type determiner
 int builtin_type(char** tokens)
 {
   for (int i = 1; tokens[i]; i++)
@@ -139,4 +143,15 @@ int execute(char* path, char** args)
   {execve(path,args,__environ);perror("execve"); exit(1);}
   int status;
   waitpid(pid, &status, 0);
+}
+
+
+
+//find current directory path
+int builtin_pwd(char** tokens)
+{
+  char* dn = getcwd(NULL,0);
+  if (!dn) {perror("getcwd"); return 1;}
+  printf("%s\n", dn);
+  free(dn);
 }

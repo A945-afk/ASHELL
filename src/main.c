@@ -37,8 +37,7 @@ int main(int argc, char *argv[])
     char* full_path = exemap(tokens[0]);
     if (full_path)
     {
-      char** args = tokens;
-      execute(full_path, args);
+      execute(full_path, tokens);
       exe = 1;
     }
     free(full_path);
