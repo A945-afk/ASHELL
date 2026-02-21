@@ -161,7 +161,7 @@ int builtin_pwd(char** tokens)
 //change shell directory
 int builtin_cd(char** tokens)
 {
-  if(!(tokens[1]))
+  if(!(tokens[1]) || !strcmp(tokens[1], "~"))
   {
     char* home = getenv("HOME");
     if(!home || chdir(home)<0) perror("cd");
