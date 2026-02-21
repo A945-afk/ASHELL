@@ -36,8 +36,11 @@ int builtin_exit(char** tokens);
 //execution
 int execute(char* path, char** args);
 
-//pwd
+//path directory
 int builtin_pwd(char** tokens);
+
+//change directory
+int builtin_cd(char** tokens);
 
 
 //builtin list
@@ -47,6 +50,7 @@ static struct builtin builtins[] =
   {"type", builtin_type},
   {"exit", builtin_exit},
   {"pwd", builtin_pwd},
+  {"cd", builtin_cd},
   {NULL,NULL}
 };
 

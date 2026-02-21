@@ -155,3 +155,30 @@ int builtin_pwd(char** tokens)
   printf("%s\n", dn);
   free(dn);
 }
+
+
+
+//change shell directory
+int builtin_cd(char** tokens)
+{
+  if(!(tokens[1])) return 1;
+  char* fln = tokens[1];
+  int len = strlen(fln);
+  struct stat buf;
+    char* enp = getenv("PATH");
+    char* p = malloc(strlen(enp) + 1);if(!p) return 1;strcpy(p,enp); char** path = tokenize(p,":");
+    char* full_path;
+    for (int j = 0; path[j]; j++)
+    {
+      int x = strlen(path[j]);
+      full_path = malloc(x+len+2);
+      full_path[x+len+1] = '\0';
+      if(strchr(fln,'/')) strcpy(full_path,fln);
+      else sprintf(full_path, "%s/%s", path[j],fln);
+      if(stat(full_path, &buf)==0 && S_ISREG(buf.st_mode)) 
+      {free(p); free(path);if(chdir(full_path)<0)perror("No such file or directory");}
+      free(full_path);
+    }
+    free(p); free(path);
+    return 0;
+}
