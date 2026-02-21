@@ -168,7 +168,8 @@ int builtin_cd(char** tokens)
     return 1;
   }
   struct stat buf;
-  if(stat(tokens[1], &buf) || !S_ISDIR(buf.st_mode)){printf("No such file or directory"); return -1;}
+  if(stat(tokens[1], &buf) || !S_ISDIR(buf.st_mode))
+  {printf("cd: /non-existing-directory: No such file or directory"); return -1;}
   chdir(tokens[1]);
   return 0;
 }
