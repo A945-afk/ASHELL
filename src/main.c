@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     free(full_path);
     end_op:
     if(!exe) printf("%s: command not found\n", tokens[0]);
-    free(command_line); free(tokens);
+    free(command_line); freetok(tokens);
   }
   return 0;
 }

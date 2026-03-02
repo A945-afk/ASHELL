@@ -31,35 +31,95 @@ char* read_line(FILE* file)
 
 
 //makes string tokens
-char** tokenize(char* command, char* splt)
+char** toke(char* command_str, char* splt, char* anc)
 {
-  char** tokens = NULL;
-  char** temp = NULL;
-  int i = 0;
-  while(*command != '\0')
+  char* command = malloc(strlen(command_str)+1);
+  if(!command) return NULL;
+  strcpy(command,command_str); char* base=command; command[strlen(command_str)]='\0';
+  int tindex = 0; char **token = NULL, **temp=NULL; char* tstr = NULL;
+  int issplit = 0;
+  int index = 0, len = 0;
+  int isanc = 0;
+  char curanc[] = {'\0','\0'};
+  int endanc;
+  while (*command)
   {
-    command += strspn(command, splt);
-    if(*command == '\0') break;
-    temp = realloc(tokens, (sizeof(*tokens) * (i + 1)));
-    if(!temp) {free(tokens); return NULL;}
-    temp[i] = command;
-    tokens = temp;
-    command += strcspn(command, splt);
-    i++;
-    if(*command == '\0') break;
-    *command = '\0';
-    command += 1;
+    switch (isanc)
+    {
+    case 0:
+      issplit = strspn(command,splt);
+      switch (issplit)
+      {
+      case 0:
+        if(!token || !token[tindex])
+        {
+          temp = realloc(token,(tindex+1)*sizeof(*token));
+          if(!temp&&token) freetok(token);
+          token = temp;
+          if(!token) return NULL; token[tindex] = NULL;
+        }
+        isanc = strspn(command,anc);
+        if(isanc)
+        {
+          curanc[0] = *command;
+          command++;
+          break;
+        }
+        if (!(token[tindex])||index>=len)
+        {
+          tstr = realloc(token[tindex],len+64);
+          if(!tstr&&token[tindex]) free(token[tindex]);
+          token[tindex]=tstr;
+          if(!(token[tindex])) {freetok(token); return NULL;}
+          tstr[len] = '\0';
+          len+=64;
+        }
+        token[tindex][index]=*command;
+        command++;
+        index++;
+        break;
+      
+      default:
+        if(token&&token[tindex])
+        {
+          token[tindex][index]='\0';
+          tindex++;
+        }
+        len = 0;
+        index = 0;
+        command+=issplit;
+        break;
+      }
+      break;
+    default:
+      endanc = strcspn(command,curanc);
+      if(!(token[tindex]) || len<=(index+endanc))
+      {
+        tstr = realloc(token[tindex],index+endanc+1);
+        if(!tstr&&token[tindex]) free(token[tindex]);
+        token[tindex]=tstr;
+        if(!(token[tindex])) {freetok(token); return NULL;}
+      }
+      memcpy((token[tindex]+index),command,endanc);
+      command+=endanc;
+      index+=endanc; len = index + 1;
+      if(*command==curanc[0]) {command++; isanc = 0;}
+      else
+      {
+        free(base);
+        printf("> ");
+        base = read_line(stdin);
+        command = base;
+      }
+      break;
+    }
   }
-  if(tokens) temp = realloc(tokens, (sizeof(*tokens) * (i + 1)));
-  if (!temp)
-  {
-    free(tokens);
-    return NULL;
-  }
-  
-  temp[i] = NULL;
-  tokens = temp;
-  return tokens;
+  temp = realloc(token,(tindex+1)*sizeof(*token));
+  if(!temp&&token) freetok(token);
+  token = temp;
+  if(!token) return NULL; token[tindex] = NULL;
+  free(base);
+  return token;
 }
 
 
@@ -172,4 +232,15 @@ int builtin_cd(char** tokens)
   {printf("cd: /non-existing-directory: No such file or directory\n"); return -1;}
   chdir(tokens[1]);
   return 0;
+}
+
+
+void freetok(char** token)
+{
+  if(!token) return;
+  for (int i = 0; token[i]; i++)
+  {
+    free(token[i]);
+  }
+  free(token);
 }

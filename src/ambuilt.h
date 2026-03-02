@@ -19,7 +19,9 @@ extern int ext_con;
 char* read_line(FILE* file);
 
 //tokenize string
-char** tokenize(char* command, char* splt);
+char** toke(char* command, char* splt, char* anc);
+#define tokenize(command,splt) toke(command,splt,"\"\'")
+void freetok(char** token);
 
 //exe permission checker
 char* exemap(char* fln);
