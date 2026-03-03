@@ -12,7 +12,7 @@
 
 
 //reads from input, 512B chunks
-char* read_line(FILE* file)
+char* read_line(FILE* file, char* prev)
 { if(!file) return NULL;
   char* buffer = malloc(MAX_INPUT);
   char* temp = NULL;
@@ -25,6 +25,27 @@ char* read_line(FILE* file)
     if(!temp) {free(buffer); perror("malloc failure"); return NULL;}
     buffer = temp;
   }
+  int sinq=0,douq=0;char *quote="\'\"";
+  int plen = strlen("prev");
+  int tlen = plen + len;
+  temp = realloc(prev,tlen+1); if(!temp) {free(prev);free(buffer);return NULL;}
+  strcpy(prev+plen,buffer);
+  free(buffer); buffer = prev;
+  for (int i = 0; i < tlen; i+=strcspn(buffer,quote))
+  {
+    if (!i||buffer[i-1]!='\\')
+    {
+      if(buffer[i]=='\''&&!(douq%2))sinq++;
+      if(buffer[i]=='\"'&&!(sinq%2))douq++;
+    }
+    i++;
+  }
+  if (sinq%2||douq%2)
+  {
+    printf("> ");
+    read_line(stdin,buffer);
+  }
+  
   return buffer;
 }
 
@@ -36,7 +57,7 @@ char** toke(char* command_str, char* splt, char* anc)
   char* command = malloc(strlen(command_str)+1);
   if(!command) return NULL;
   strcpy(command,command_str); char* base=command; command[strlen(command_str)]='\0';
-  int tindex = 0; char **token = NULL, **temp=NULL; char* tstr = NULL;
+  int tindex = 0,wc = 0; char **token = NULL, **temp=NULL; char* tstr = NULL;
   int issplit = 0;
   int index = 0, len = 0;
   int isanc = 0;
@@ -51,12 +72,13 @@ char** toke(char* command_str, char* splt, char* anc)
       switch (issplit)
       {
       case 0:
-        if(!token || !token[tindex])
+        if(tindex>=wc)
         {
           temp = realloc(token,(tindex+1)*sizeof(*token));
           if(!temp&&token) freetok(token);
           token = temp;
           if(!token) return NULL; token[tindex] = NULL;
+          wc++;
         }
         isanc = strspn(command,anc);
         if(isanc)
@@ -103,14 +125,7 @@ char** toke(char* command_str, char* splt, char* anc)
       memcpy((token[tindex]+index),command,endanc);
       command+=endanc;
       index+=endanc; len = index + 1;
-      if(*command==curanc[0]) {command++; isanc = 0;}
-      else
-      {
-        free(base);
-        printf("> ");
-        base = read_line(stdin);
-        command = base;
-      }
+      command++; isanc = 0;
       break;
     }
   }

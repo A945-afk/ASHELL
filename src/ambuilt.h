@@ -16,7 +16,7 @@ struct  builtin
 extern int ext_con;
 
 //read input
-char* read_line(FILE* file);
+char* read_line(FILE* file, char* prev);
 
 //tokenize string
 char** toke(char* command, char* splt, char* anc);
