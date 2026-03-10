@@ -27,11 +27,8 @@ char* read_line(FILE* file, char* prev)
   for (int i = 0; i < tlen; i++)
   {
     i+=strcspn(buffer+i,quote);
-    if (!i||buffer[i-1]!='\\')
-    {
-      if(buffer[i]=='\''&&!(douq%2))  sinq++;
-      if(buffer[i]=='\"'&&!(sinq%2))  douq++;
-    }
+    if (!i||buffer[i-1]!='\\') if(buffer[i]=='\"'&&!(sinq%2))  douq++;
+    if(buffer[i]=='\''&&!(douq%2))  sinq++;
   }
   if (sinq%2||douq%2||(tlen>2&&buffer[tlen-2]=='\\'))
   {
