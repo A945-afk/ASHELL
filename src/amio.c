@@ -17,7 +17,7 @@ char* read_line(FILE* file, char* prev)
     if(!temp) {free(buffer); perror("malloc failure"); return NULL;}
     buffer = temp;
   }
-  int sinq=0,douq=0;char *quote="\'\"";
+  int sinq=0,douq=0,esc=0;char *quote="\'\"";
   int plen = (prev)?strlen(prev):0;
   int tlen = plen + len;
   temp = realloc(prev,tlen+1); if(!temp) {if(prev)free(prev);free(buffer);return NULL;}
@@ -26,9 +26,9 @@ char* read_line(FILE* file, char* prev)
   free(buffer); buffer = prev;
   for (int i = 0; i < tlen; i++)
   {
-    i+=strcspn(buffer+i,quote);
-    if (!i||buffer[i-1]!='\\') if(buffer[i]=='\"'&&!(sinq%2))  douq++;
-    if(buffer[i]=='\''&&!(douq%2))  sinq++;
+    if(buffer[i]=='\\' && !(sinq%2)) {esc++;continue;}
+    if(buffer[i]=='\"' && (!i||(buffer[i-1]!='\\'&&!(esc%2)&&!(sinq%2))))  {douq++;continue;}
+    if(buffer[i]=='\''&&!(douq%2))  {sinq++;continue;}
   }
   if (sinq%2||douq%2||(tlen>2&&buffer[tlen-2]=='\\'))
   {
