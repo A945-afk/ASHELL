@@ -3,25 +3,14 @@
 
 
 
-#define MAX_INPUT 512
 typedef int (*built_func)(char** argv);
-
 struct  builtin
 {
   char* key;
   built_func func;
 };
-
-
 extern int ext_con;
 
-//read input
-char* read_line(FILE* file, char* prev);
-
-//tokenize string
-char** toke(char* command, char* splt, char* anc);
-#define tokenize(command,splt) toke(command,splt,"\"\'")
-void freetok(char** token);
 
 //exe permission checker
 char* exemap(char* fln);

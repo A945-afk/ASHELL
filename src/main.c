@@ -4,6 +4,7 @@
 #include<sys/stat.h>
 #include<unistd.h>
 #include"ambuilt.h"
+#include"amio.h"
 
 
 
@@ -18,7 +19,8 @@ int main(int argc, char *argv[])
     exe=0;
     setbuf(stdout, NULL);
     printf("$ ");
-    char* command_line = read_line(stdin,"");
+    char* command_line = NULL;
+    command_line = read_line(stdin,command_line);
     char** tokens = tokenize(command_line, " \n\t\r");
     if (!tokens)
     {
