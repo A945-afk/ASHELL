@@ -29,6 +29,7 @@ char* read_line(FILE* file, char* prev)
     if(buffer[i]=='\\' && !(sinq%2)) {esc++;continue;}
     if(buffer[i]=='\"' && (!i||(buffer[i-1]!='\\'&&!(esc%2)&&!(sinq%2))))  {douq++;continue;}
     if(buffer[i]=='\''&&!(douq%2))  {sinq++;continue;}
+    esc=0;
   }
   if (sinq%2||douq%2||(tlen>2&&buffer[tlen-2]=='\\'))
   {
