@@ -84,7 +84,7 @@ char** tokenize(char* command_str, char* splt)
       i+=scount-1;bs=strind=0;
       continue;
     }
-    if(command_str[i]=='\\' && (!qcon||curq=='\''))i++;
+    if(command_str[i]=='\\' && !(qcon&&curq=='\''))i++;
     *(*(tokens+tcount)+strind)=command_str[i];
     strind++;
   }
