@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include<fcntl.h>
 #include"amio.h"
 
 //reads from input, 512B chunks
@@ -46,18 +47,23 @@ char* read_line(FILE* file, char* prev)
 
 
 //makes string tokens
-char** tokenize(char* command_str, char* splt)
+char** tokenize(char* cmd, char* splt, char* inde, char* opflag, char* flagless)
 {
-  if(!command_str) return NULL;
+  if(!cmd || !(*cmd)) return NULL;
   char curq='\0', **temp = NULL, *tstr=NULL, **tokens=NULL;
-  int count = strlen(command_str), scount, tcount=0, qcon=0, bs=0;
+  int count = strlen(cmd), scount, tcount=0, qcon=0, bs=0, strind=0;
+  struct state_machine kd = {0,0};
+  if(strspn(cmd,splt)==count) return NULL;
 
-  for (int i=0,strind=0; i<count; i++)
+  int indelen = strlen(flagless)+strlen(inde);char tid[indelen+1];
+  sprintf(tid,"%s%s", inde, flagless); tid[indelen] = '\0';
+  
+  for (int i=0; i<count; i++)
   {
-    if(command_str[i]=='\''||command_str[i]=='\"')
+    if(cmd[i]=='\''||cmd[i]=='\"')
     {
-      if(!qcon){curq=command_str[i];qcon=1;continue;}
-      if(curq==command_str[i]){qcon=0;continue;}
+      if(!qcon){curq=cmd[i];qcon=1;continue;}
+      if(curq==cmd[i]){qcon=0;continue;}
     }
     if(!tokens||!*(tokens+tcount))
     {
@@ -75,18 +81,29 @@ char** tokenize(char* command_str, char* splt)
       bs+=64;
       *(tokens+tcount)=tstr;
     }
-    scount = strspn((command_str+i),splt);
+    scount = strspn((cmd+i),splt);
     if(!qcon && scount)
     {
       if(strind) {*(*(tokens+tcount)+strind)='\0';tcount++;}
       i+=scount-1;bs=strind=0;
       continue;
     }
-    if(command_str[i]=='\\' && !(qcon&&curq=='\''))i++;
-    *(*(tokens+tcount)+strind)=command_str[i];
+    if(!qcon && strspn((cmd+i), tid)) kd.nxts = 1;
+    else kd.nxts = 0;
+    if (kd.curs!=kd.nxts)
+    {
+      if(strind && !(strind==1 && strspn((cmd+i),inde) && strspn((cmd+i-1), opflag)))
+      
+      {*(*(tokens+tcount)+strind)='\0';tcount++; bs=strind=0;}
+
+      kd.curs=kd.nxts; i--; continue;
+    }
+    
+    if(cmd[i]=='\\' && !(qcon&&curq=='\''))i++;
+    *(*(tokens+tcount)+strind)=cmd[i];
     strind++;
   }
-  
+  if(tokens&&tokens[tcount])tokens[tcount][strind] = '\0';
   return tokens;
 }
 

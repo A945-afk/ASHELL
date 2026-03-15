@@ -16,7 +16,7 @@ char* exemap(char* fln)
   int len = (fln)?strlen(fln):0; if(!len)return NULL;
   struct stat buf;
     char* enp = getenv("PATH");
-    char* p = malloc(strlen(enp) + 1);if(!p) return NULL;strcpy(p,enp); char** path = tokenize(p,":");
+    char* p = malloc(strlen(enp) + 1);if(!p) return NULL;strcpy(p,enp); char** path = simple_token(p,":");
     char* full_path;
     for (int j = 0; path[j]; j++)
     {

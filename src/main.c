@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     printf("$ ");
     char* command_line = NULL;
     command_line = read_line(stdin,command_line);
-    char** tokens = tokenize(command_line, " \n\t\r");
+    char** tokens = tokenize(command_line, " \n\t\r", ">", "12", "&|");
     if (!tokens)
     {
       if(command_line) free(command_line);
