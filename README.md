@@ -1,4 +1,4 @@
-# AM Shell
+# AShell
 
 [![progress-banner](https://backend.codecrafters.io/progress/shell/bfd39c0a-e772-4d75-8e3c-4f8f4d089418)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
 
