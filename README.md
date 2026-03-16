@@ -52,7 +52,8 @@ The shell implements a REPL loop, builtin commands, external program execution a
 
 ## Architecture
 
-```src/
+```
+src/
  ├── main.c
  ├── ambuilt.c
  ├── ambuilt.h
@@ -68,7 +69,8 @@ The shell implements a REPL loop, builtin commands, external program execution a
 
 The shell runs a simple read–execute loop:
 
-```prompt
+```
+prompt
 ↓
 read_line()
 ↓
@@ -111,7 +113,8 @@ Features:
 
 Builtins are registered using a function pointer table.
 
-```struct builtin
+```
+struct builtin
 {
     char* key;
     built_func func;
@@ -120,7 +123,8 @@ Builtins are registered using a function pointer table.
 
 Example:
 
-```{"echo", builtin_echo}
+```
+{"echo", builtin_echo}
 {"cd", builtin_cd}
 {"pwd", builtin_pwd}
 ```
@@ -153,7 +157,8 @@ Requirements:
 
 Build:
 
-```cmake -B build
+```
+cmake -B build
 cmake --build build
 ```
 
